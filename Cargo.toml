@@ -1,0 +1,85 @@
+[package]
+name = "hospital_register"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+authors = ["Okello Isaac <iamokelloisaac@gmail.com>"]
+description = "A production-grade Hospital Register API built with Axum, SQLx, and PostgreSQL."
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+
+[dependencies]
+# --- Runtime ---
+tokio = { version = "1.53", features = ["full"] }
+
+# --- Web Framework & Middleware ---
+axum = { version = "0.8" }
+tower-http = { version = "0.6", features = [
+    "cors",
+    "trace",
+    "request-id",
+    "timeout",
+    "compression-gzip", # Replaced 'compression-full' with actual algorithm flags
+    "compression-br"
+] }
+
+rand_core = { version = "0.6", features = ["getrandom"] }
+
+# --- Database (PostgreSQL) ---
+sqlx = { version = "0.9", features = [
+    "runtime-tokio",
+    "tls-rustls-ring-webpki", # Corrected to a valid root-cert backend string
+    "postgres",
+    "uuid",
+    "chrono",
+    "migrate",
+    "macros",
+    "json",
+] }
+
+# --- Database (Redis) ---
+redis = { version = "0.25", features = ["tokio-comp", "connection-manager"] }
+
+# --- Serialization ---
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# --- Validation ---
+validator = { version = "0.21", features = ["derive"] }
+
+# --- Error Handling ---
+thiserror = "2.0"
+
+# --- Config & Environment ---
+config = { version = "0.15", default-features = false, features = ["toml"] }
+dotenvy = "0.15"
+
+# --- Auth & Security ---
+jsonwebtoken = { version = "11.1", features = ["rust_crypto"] }
+argon2 = "0.5"
+
+# --- IDs & Time ---
+uuid = { version = "1.26", features = ["v4", "serde"] } # Removed broken 'fast-rng'
+chrono = { version = "0.4", features = ["serde"] }       # Let sqlx feature handle its native type pairings
+anyhow = "1.0"
+async-trait = "0.1"
+
+# --- Observability ---
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+
+[dev-dependencies]
+# --- Testing Tools ---
+# Removed duplicate 'sqlx', 'tower', and 'tokio' declarations since they inherit from [dependencies]
+
+[profile.dev]
+opt-level = 0
+debug = true
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+strip = true
+panic = "abort"
