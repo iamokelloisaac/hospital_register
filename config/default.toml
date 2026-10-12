@@ -1,0 +1,28 @@
+[app]
+name = "hospital_register"
+port = 8080
+env = "development"
+
+[database]
+max_connections = 20
+min_connections = 2
+acquire_timeout_secs = 5
+idle_timeout_secs = 300
+max_lifetime_secs = 1800
+
+[redis]
+pool_size = 10
+connection_timeout_secs = 5
+
+[jwt]
+access_ttl_minutes = 15
+refresh_ttl_days = 7
+
+[rate_limit]
+global_requests_per_second = 100
+login_requests_per_minute = 5
+register_requests_per_minute = 5
+
+[telemetry]
+service_name = "hospital_register"
+log_format = "pretty"   # "pretty" for dev, "json" for prod
