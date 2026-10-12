@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: hospital_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hospital
+      POSTGRES_PASSWORD: hospital_dev_password
+      POSTGRES_DB: hospital_register
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hospital -d hospital_register"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - hospital_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: hospital_redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec"]
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - hospital_net
+
+volumes:
+  postgres_data:
+    name: hospital_postgres_data
+  redis_data:
+    name: hospital_redis_data
+
+networks:
+  hospital_net:
+    name: hospital_net
+    driver: bridge
