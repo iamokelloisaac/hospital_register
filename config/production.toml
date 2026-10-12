@@ -1,0 +1,10 @@
+[app]
+env = "production"
+
+[database]
+max_connections = 50
+min_connections = 10
+acquire_timeout_secs = 10
+
+[telemetry]
+log_format = "json"
