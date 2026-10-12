@@ -1,0 +1,10 @@
+[app]
+env = "development"
+
+[database]
+# Smaller pool for local development
+max_connections = 5
+min_connections = 1
+
+[telemetry]
+log_format = "pretty"
